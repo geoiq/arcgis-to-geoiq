@@ -1,0 +1,34 @@
+arc-to-geoiq
+
+A library that will pull data from an ArcGIS REST services and add them as a 
+layer in a GeoIQ server. It can also download the data from the ArcGIS server
+and save the data to a csv file called output.csv.
+
+See the sample_utility for an example on how to use the library. It gives 
+and example for both dumping the data to csv and uploading to GeoIq.
+
+There is a limit to the size of the file that can be uploaded to GeoIQ. This
+limit is set in lib/arc-to-geoiq.rb file by setting the GEOIQ_UPLOAD_LIMIT 
+constant. The library keeps track of the size of the data. If the data
+exceeds the limit, it will raise a RuntimeError with the message: "Size of data exceeds GeoIq upload limit".
+
+To be able to retrieve data from ArcGIS REST services, the ArcGIS server
+must support layer queries. It also must support "greater than" queries (as 
+in OBJECTID > 23).  Unless these two conditions are met, the library
+can't retrieve information. If the library can't retrieve data, it will 
+throw Runtime errors with the messages "Query clause not supported" or 
+"Layer doesn't support query".
+
+Due to data retrieving limitations of ArcGIS, we can only download 500 records
+at a time.
+
+Some layers in ArcGIS REST services lack geometry columns. When this happens, a RuntimeError with the message "The layer lacks a geometry field" is raised.
+
+While uploading to GeoIq, if there are missing credentials, the library will
+throw an ArgumentError containing in its message the missing parameter.
+
+The library will raise an error if the GeoIq server sends back an http status
+code above 400.
+
+For the functional tests to work, please add a valid GeoIQ server, user name
+and password.
